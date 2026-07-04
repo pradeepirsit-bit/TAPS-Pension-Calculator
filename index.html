@@ -1,363 +1,1851 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bike Roar Rater - TFJS On-Device</title>
-    
-    <!-- Load TensorFlow.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
-    <!-- Load Teachable Machine Audio Extension (Handles complex FFT/Spectrogram math automatically) -->
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/speech-commands@0.4.0/dist/speech-commands.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+    <meta name="theme-color" content="#1a5bbf" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="TAPS Calculator" />
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlRBU1MgUGVuc2lvbiBDYWxjdWxhdG9yIiwKICAic2hvcnRfbmFtZSI6ICJUQVBTIENhbGMiLAogICJkZXNjcmlwdGlvbiI6ICJDYWxjdWxhdGUgVGFtaWwgTmFkdSBBc3N1cmVkIFBlbnNpb24gU2NoZW1lIGJlbmVmaXRzIGFzIHBlciBHLk8uIDExMS8yMDI2IiwKICAic3RhcnRfdXJsIjogIi4iLAogICJkaXNwbGF5IjogInN0YW5kYWxvbmUiLAogICJiYWNrZ3JvdW5kX2NvbG9yIjogIiMxYTViYmYiLAogICJ0aGVtZV9jb2xvciI6ICIjMWE1YmJmIiwKICAiaWNvbnMiOiBbCiAgICB7ICJzcmMiOiAiZGF0YTppbWFnZS9zdmcreG1sLDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgNTEyIDUxMicgd2lkdGg9JzUxMicgaGVpZ2h0PSc1MTInPjxyZWN0IHdpZHRoPSc1MTInIGhlaWdodD0nNTEyJyByeD0nNTAnIGZpbGw9JyMxYTViYmYnLz48dGV4dCB4PScyNTYnIHk9JzI4MCcgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnIGZvbnQtc2l6ZT0nMjUwJyBmaWxsPSd3aGl0ZScgdGV4dC1hbmNob3I9J21pZGRsZScgZG9taW5hbnQtYmFzZWxpbmU9J2NlbnRyYWwnPlQ8L3RleHQ+PC9zdmc+IiwgInNpemVzIjogIjUxMng1MTIiLCAidHlwZSI6ICJpbWFnZS9zdmcreG1sIiwgInB1cnBvc2UiOiAiYW55IG1hc2thYmxlIiB9CiAgXQp9" />
+
+    <title>TAPS Pension Calculator | G.O. 111/2026</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
     <style>
+        /* ─────────── Reset & Base ─────────── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         :root {
-            --primary: #ff4500;
-            --secondary: #222;
-            --bg: #0a0a0a;
-            --text: #ffffff;
-            --accent: #00ff7f;
+            --primary: #1a5bbf;
+            --primary-dark: #0f4a9e;
+            --primary-light: #eef6ff;
+            --gold: #d97706;
+            --gold-light: #fffbeb;
+            --blue-light: #f0f9ff;
+            --purple-light: #faf5ff;
+            --purple: #7c3aed;
+            --gray-50: #f8fafc;
+            --gray-100: #f1f5f9;
+            --gray-200: #e2e8f0;
+            --gray-300: #d1d9e6;
+            --gray-500: #64748b;
+            --gray-700: #334155;
+            --gray-900: #0b1e3a;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.02);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+            --radius-lg: 32px;
+            --radius-md: 20px;
+            --radius-sm: 16px;
+            --radius-xs: 12px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f4f8;
+            min-height: 100vh;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            text-align: center;
+            padding: 2rem 1.5rem;
+            color: #1e293b;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
-        .container {
-            background-color: var(--secondary);
-            padding: 2.5rem;
-            border-radius: 20px;
-            box-shadow: 0 15px 40px rgba(255, 69, 0, 0.15);
-            width: 90%;
-            max-width: 450px;
-            position: relative;
-            overflow: hidden;
+        .dashboard {
+            max-width: 1120px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            padding: 2.5rem 2.8rem 2.8rem;
+            transition: all var(--transition);
+            animation: fadeUp 0.6s ease-out;
         }
 
-        /* Top highlight bar */
-        .container::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 5px;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        h1 { margin-top: 0; color: var(--primary); text-transform: uppercase; letter-spacing: 2px; }
-        p { color: #aaaaaa; font-size: 0.95rem; margin-bottom: 25px; }
+        @keyframes pulseGlow {
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(26, 91, 191, 0.2);
+            }
+            50% {
+                box-shadow: 0 0 0 6px rgba(26, 91, 191, 0.05);
+            }
+        }
 
-        #record-btn {
-            background: linear-gradient(145deg, #ff5722, #e63e00);
+        .pulse-on-focus:focus-within {
+            animation: pulseGlow 1.5s ease-in-out 1;
+        }
+
+        /* ─── Header ─── */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid #eef2f6;
+            padding-bottom: 1.5rem;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .header-left .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 0.35rem 1rem;
+            border-radius: 50px;
+            width: fit-content;
+            border: 1px solid #d6e4ff;
+            transition: all var(--transition);
+        }
+
+        .header-left .badge:hover {
+            transform: scale(1.02);
+        }
+
+        .header-left h1 {
+            font-size: 1.9rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--gray-900);
+            line-height: 1.2;
+        }
+
+        .header-left h1 span {
+            color: var(--primary);
+        }
+
+        .header-left .sub {
+            font-size: 0.95rem;
+            color: var(--gray-500);
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: var(--gray-50);
+            padding: 0.5rem 1.2rem 0.5rem 1rem;
+            border-radius: 60px;
+            border: 1px solid var(--gray-200);
+            transition: all var(--transition);
+        }
+
+        .header-right:hover {
+            border-color: var(--primary);
+        }
+
+        .header-right .gov-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .header-right .gov-logo i {
+            font-size: 1.6rem;
+            color: var(--primary);
+        }
+
+        .header-right .gov-logo span {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--gray-900);
+            white-space: nowrap;
+        }
+
+        .header-right .order-ref {
+            background: var(--primary);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.25rem 0.9rem;
+            border-radius: 50px;
+            letter-spacing: 0.3px;
+            transition: all var(--transition);
+        }
+
+        .header-right .order-ref:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
+        }
+
+        /* ─── PWA Install Banner ─── */
+        .pwa-banner {
+            display: none;
+            background: var(--gray-50);
+            border-radius: var(--radius-xs);
+            padding: 0.75rem 1.2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray-200);
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            flex-wrap: wrap;
+            animation: fadeUp 0.4s ease-out;
+        }
+
+        .pwa-banner.show {
+            display: flex;
+        }
+
+        .pwa-banner .pwa-text {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-size: 0.85rem;
+            color: var(--gray-700);
+        }
+
+        .pwa-banner .pwa-text i {
+            color: var(--primary);
+            font-size: 1.1rem;
+        }
+
+        .pwa-banner .pwa-btn {
+            background: var(--primary);
             color: white;
             border: none;
-            border-radius: 50%;
-            width: 90px; height: 90px;
-            font-size: 32px;
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.8rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(255, 69, 0, 0.4);
-            margin: 10px auto 25px auto;
-            display: flex; align-items: center; justify-content: center;
+            transition: all var(--transition);
         }
 
-        #record-btn:active { transform: scale(0.9); }
-        
-        #record-btn.recording {
-            background: #dc143c;
-            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+        .pwa-banner .pwa-btn:hover {
+            background: var(--primary-dark);
+            transform: scale(1.05);
         }
 
-        @keyframes pulse-ring {
-            0% { box-shadow: 0 0 0 0 rgba(220, 20, 60, 0.7); }
-            70% { box-shadow: 0 0 0 25px rgba(220, 20, 60, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(220, 20, 60, 0); }
+        .pwa-banner .pwa-close {
+            background: transparent;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            font-size: 1.1rem;
+            padding: 0.2rem 0.5rem;
+            transition: all var(--transition);
         }
 
-        /* Progress Bar for the 5s capture */
-        .progress-container { width: 100%; height: 6px; background: #333; border-radius: 3px; margin-bottom: 15px; display: none; overflow: hidden; }
-        .progress-bar { height: 100%; width: 0%; background: var(--primary); transition: width 0.1s linear; }
-
-        .results { display: none; animation: slideUp 0.5s ease-out forwards; border-top: 1px solid #333; padding-top: 20px; }
-        
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .pwa-banner .pwa-close:hover {
+            color: var(--gray-900);
+            transform: rotate(90deg);
         }
 
-        .score-box { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 12px; margin-bottom: 15px; }
-        .score-display { font-size: 4rem; font-weight: 900; color: var(--accent); margin: 0; line-height: 1; text-shadow: 0 0 15px rgba(0,255,127,0.3); }
-        .bonus-text { font-size: 0.8rem; color: #ffeb3b; margin-top: 5px; }
-
-        .bike-badge {
-            display: inline-block; padding: 6px 12px; border-radius: 6px;
-            background: #333; font-weight: bold; font-size: 1.1rem; margin: 10px 0;
-            border-left: 4px solid var(--primary);
+        /* ─── Calculator Inputs ─── */
+        .calculator-inputs {
+            background: var(--gray-50);
+            border-radius: var(--radius-md);
+            padding: 1.8rem 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray-200);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-end;
+            gap: 1.5rem;
+            transition: all var(--transition);
         }
 
-        .trash-talk {
-            font-size: 1.1rem; font-style: italic; background: rgba(255,255,255,0.05);
-            padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px solid #444;
+        .calculator-inputs:hover {
+            border-color: var(--gray-300);
         }
 
-        #status { color: #888; font-size: 0.9rem; font-weight: 500; height: 20px; }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            flex: 1 0 140px;
+            min-width: 130px;
+        }
+
+        .input-group label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #475569;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: color var(--transition);
+        }
+
+        .input-group label i {
+            color: #94a3b8;
+            font-size: 0.8rem;
+            transition: color var(--transition);
+        }
+
+        .input-group .input-wrapper {
+            display: flex;
+            align-items: center;
+            background: white;
+            border-radius: var(--radius-xs);
+            border: 1px solid var(--gray-300);
+            transition: all var(--transition);
+            padding: 0 0.8rem;
+        }
+
+        .input-group .input-wrapper:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(26, 91, 191, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .input-group .input-wrapper span {
+            color: var(--gray-500);
+            font-weight: 500;
+            font-size: 0.9rem;
+            padding-right: 0.4rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 0.7rem 0;
+            border: none;
+            background: transparent;
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--gray-900);
+            outline: none;
+            font-family: inherit;
+        }
+
+        .input-group input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .input-group input::-webkit-outer-spin-button,
+        .input-group input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .input-group input[type="date"] {
+            color-scheme: light;
+            padding: 0.7rem 0;
+            cursor: pointer;
+            min-width: 0;
+        }
+
+        .input-group .hint {
+            font-size: 0.65rem;
+            color: #94a3b8;
+            margin-top: 0.1rem;
+            min-height: 1.2rem;
+        }
+
+        .calc-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.7rem 2rem;
+            border-radius: var(--radius-xs);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            height: fit-content;
+            align-self: center;
+            white-space: nowrap;
+            margin-left: auto;
+            flex: 0 1 auto;
+            box-shadow: 0 2px 8px rgba(26, 91, 191, 0.2);
+        }
+
+        .calc-btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(26, 91, 191, 0.25);
+        }
+
+        .calc-btn:active {
+            transform: scale(0.96) translateY(0);
+            box-shadow: 0 2px 4px rgba(26, 91, 191, 0.15);
+        }
+
+        /* ─── Cards ─── */
+        .eligibility-banner {
+            background: #ffffff;
+            border-radius: var(--radius-sm);
+            padding: 1rem 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--gray-200);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition);
+        }
+
+        .eligibility-banner:hover {
+            box-shadow: var(--shadow-md);
+            border-color: var(--gray-300);
+        }
+
+        .eligibility-banner .status {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .eligibility-banner .status .label {
+            font-weight: 500;
+            color: #475569;
+        }
+
+        .eligibility-banner .status .value {
+            font-weight: 700;
+            font-size: 1.05rem;
+            padding: 0.2rem 1rem;
+            border-radius: 50px;
+            transition: all var(--transition);
+        }
+
+        .value.eligible {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .value.ineligible {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .eligibility-banner .service-detail {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .eligibility-banner .service-detail span {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        .eligibility-banner .service-detail strong {
+            color: var(--gray-900);
+            font-weight: 700;
+        }
+
+        /* ─── Interim Card ─── */
+        .interim-card {
+            background: var(--gold-light);
+            border-radius: var(--radius-sm);
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #fde68a;
+            border-left: 6px solid var(--gold);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            box-shadow: 0 2px 8px rgba(251, 191, 36, 0.08);
+            transition: all var(--transition);
+        }
+
+        .interim-card:hover {
+            box-shadow: 0 4px 16px rgba(251, 191, 36, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .interim-card .interim-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .interim-card .interim-left .title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #78350f;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .interim-card .interim-left .title i {
+            color: var(--gold);
+        }
+
+        .interim-card .interim-left .desc {
+            font-size: 0.85rem;
+            color: #92400e;
+            max-width: 500px;
+        }
+
+        .interim-card .interim-left .desc .rule-highlight {
+            background: #fef3c7;
+            padding: 0.1rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #78350f;
+        }
+
+        .interim-card .interim-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.2rem;
+            background: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: var(--radius-xs);
+            border: 1px solid #fde68a;
+            transition: all var(--transition);
+        }
+
+        .interim-card .interim-right:hover {
+            border-color: var(--gold);
+        }
+
+        .interim-card .interim-right .amount {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            line-height: 1.2;
+        }
+
+        .interim-card .interim-right .breakdown {
+            font-size: 0.75rem;
+            color: #78350f;
+        }
+
+        .interim-card .interim-right .breakdown span {
+            background: #fef3c7;
+            padding: 0.1rem 0.6rem;
+            border-radius: 12px;
+            margin: 0 0.2rem;
+            font-weight: 600;
+        }
+
+        .family-interim {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #92400e;
+            border-top: 1px dashed #fde68a;
+            padding-top: 0.5rem;
+            width: 100%;
+        }
+
+        /* ─── CPS Card ─── */
+        .cps-card {
+            background: var(--blue-light);
+            border-radius: var(--radius-sm);
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #b7dffa;
+            border-left: 6px solid #0e7cbf;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            box-shadow: 0 2px 8px rgba(14, 124, 191, 0.06);
+            transition: all var(--transition);
+        }
+
+        .cps-card:hover {
+            box-shadow: 0 4px 16px rgba(14, 124, 191, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .cps-card .cps-left {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .cps-card .cps-left .title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #075a8c;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .cps-card .cps-left .title i {
+            color: #0e7cbf;
+        }
+
+        .cps-card .cps-left .desc {
+            font-size: 0.85rem;
+            color: #1a5a7a;
+            max-width: 500px;
+        }
+
+        .cps-card .cps-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: flex-end;
+            flex: 1;
+        }
+
+        .cps-card .cps-inputs .input-group {
+            flex: 1 0 120px;
+            min-width: 100px;
+        }
+
+        .cps-card .cps-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.2rem;
+            background: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: var(--radius-xs);
+            border: 1px solid #b7dffa;
+            min-width: 150px;
+            transition: all var(--transition);
+        }
+
+        .cps-card .cps-right:hover {
+            border-color: #0e7cbf;
+        }
+
+        .cps-card .cps-right .amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            line-height: 1.2;
+        }
+
+        .cps-card .cps-right .breakdown {
+            font-size: 0.75rem;
+            color: #1a5a7a;
+        }
+
+        /* ─── Comparison Card ─── */
+        .comparison-card {
+            background: var(--purple-light);
+            border-radius: var(--radius-sm);
+            padding: 1.5rem 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid #d8c4f0;
+            border-left: 6px solid var(--purple);
+            box-shadow: 0 2px 8px rgba(124, 58, 237, 0.06);
+            transition: all var(--transition);
+        }
+
+        .comparison-card:hover {
+            box-shadow: 0 4px 16px rgba(124, 58, 237, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .comparison-card .comp-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #4c1d95;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .comparison-card .comp-title i {
+            color: var(--purple);
+        }
+
+        .comparison-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: space-between;
+        }
+
+        .comparison-item {
+            flex: 1 1 200px;
+            background: white;
+            border-radius: var(--radius-xs);
+            padding: 1rem 1.2rem;
+            border: 1px solid #ede9fe;
+            min-width: 150px;
+            transition: all var(--transition);
+        }
+
+        .comparison-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .comparison-item .item-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #6b21a5;
+            letter-spacing: 0.3px;
+        }
+
+        .comparison-item .item-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin: 0.2rem 0 0.3rem;
+        }
+
+        .comparison-item .item-detail {
+            font-size: 0.75rem;
+            color: var(--gray-500);
+        }
+
+        .comparison-item .item-badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.15rem 0.8rem;
+            border-radius: 50px;
+            margin-top: 0.3rem;
+        }
+
+        .badge-recommend {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .badge-best {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .badge-warn {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .comparison-note {
+            margin-top: 0.8rem;
+            font-size: 0.85rem;
+            color: #4c1d95;
+            border-top: 1px solid #ede9fe;
+            padding-top: 0.8rem;
+            line-height: 1.6;
+        }
+
+        .comparison-note strong {
+            color: #1e1b4b;
+        }
+
+        /* ─── Table ─── */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 18px;
+            border: 1px solid var(--gray-200);
+            background: #ffffff;
+            margin-top: 0.25rem;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition);
+        }
+
+        .table-wrapper:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+            min-width: 600px;
+        }
+
+        thead {
+            background: var(--gray-100);
+            border-bottom: 2px solid var(--gray-200);
+        }
+
+        thead th {
+            padding: 1.1rem 1.2rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #475569;
+            white-space: nowrap;
+        }
+
+        thead th:first-child {
+            padding-left: 1.8rem;
+        }
+        thead th:last-child {
+            padding-right: 1.8rem;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #f1f4f9;
+            transition: all var(--transition);
+        }
+
+        tbody tr:last-child {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #fafcff;
+        }
+
+        tbody td {
+            padding: 1.2rem 1.2rem;
+            vertical-align: middle;
+            line-height: 1.5;
+        }
+
+        tbody td:first-child {
+            padding-left: 1.8rem;
+        }
+        tbody td:last-child {
+            padding-right: 1.8rem;
+        }
+
+        .benefit-name {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .benefit-name .icon-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--radius-xs);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+            flex-shrink: 0;
+            transition: all var(--transition);
+        }
+
+        .benefit-name .icon-circle:hover {
+            transform: scale(1.05) rotate(-3deg);
+        }
+
+        .benefit-name .icon-circle.blue {
+            background: #2563eb;
+        }
+        .benefit-name .icon-circle.green {
+            background: #16a34a;
+        }
+        .benefit-name .icon-circle.amber {
+            background: #d97706;
+        }
+        .benefit-name .icon-circle.purple {
+            background: #7c3aed;
+        }
+        .benefit-name .icon-circle.rose {
+            background: #e11d48;
+        }
+        .benefit-name .icon-circle.teal {
+            background: #0d9488;
+        }
+        .benefit-name .icon-circle.indigo {
+            background: #4f46e5;
+        }
+
+        .benefit-name .name-text {
+            font-weight: 600;
+            color: var(--gray-900);
+            font-size: 0.95rem;
+        }
+
+        .benefit-name .name-text small {
+            display: block;
+            font-weight: 400;
+            font-size: 0.7rem;
+            color: var(--gray-500);
+            margin-top: 0.1rem;
+        }
+
+        .provision {
+            color: #1e293b;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .provision .highlight {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+            padding: 0.1rem 0.5rem;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .calc-step {
+            display: block;
+            font-weight: 400;
+            font-size: 0.75rem;
+            color: #475569;
+            background: var(--gray-50);
+            padding: 0.4rem 0.7rem;
+            border-radius: 8px;
+            margin-top: 0.4rem;
+            border-left: 3px solid #94a3b8;
+            font-family: 'Inter', monospace;
+            letter-spacing: 0.2px;
+            word-break: break-word;
+            transition: all var(--transition);
+        }
+
+        .calc-step:hover {
+            background: #f1f5f9;
+            border-left-color: var(--primary);
+        }
+
+        .calc-step strong {
+            color: var(--gray-900);
+            font-weight: 700;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            background: #f1f5f9;
+            padding: 0.2rem 0.7rem;
+            border-radius: 50px;
+            font-size: 0.65rem;
+            font-weight: 500;
+            color: #475569;
+            white-space: nowrap;
+        }
+
+        .tag.green {
+            background: #dcfce7;
+            color: #15803d;
+        }
+        .tag.green i {
+            color: #16a34a;
+        }
+
+        .tag.blue {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+        .tag.blue i {
+            color: #2563eb;
+        }
+
+        .tag.amber {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        /* ─── Footer ─── */
+        .footer-meta {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid #eef2f6;
+        }
+
+        .footer-meta .left {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-meta .left .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            color: #475569;
+            transition: all var(--transition);
+        }
+
+        .footer-meta .left .stat:hover {
+            color: var(--gray-900);
+        }
+
+        .footer-meta .left .stat i {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .footer-meta .left .stat strong {
+            color: var(--gray-900);
+            font-weight: 600;
+        }
+
+        .footer-meta .right {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .footer-meta .right .pill {
+            background: #f1f5f9;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all var(--transition);
+            cursor: default;
+        }
+
+        .footer-meta .right .pill:hover {
+            background: #e2e8f0;
+        }
+
+        .footer-meta .right .pill i {
+            color: #64748b;
+            font-size: 0.65rem;
+        }
+
+        .footer-meta .right .pill.active {
+            background: #dcfce7;
+            color: #15803d;
+        }
+        .footer-meta .right .pill.active i {
+            color: #16a34a;
+        }
+
+        /* ─── Responsive ─── */
+        @media (max-width: 900px) {
+            .dashboard {
+                padding: 1.8rem 1.8rem 2rem;
+            }
+            .calculator-inputs {
+                padding: 1.5rem;
+                gap: 1.2rem;
+            }
+            .input-group {
+                flex: 1 0 150px;
+                min-width: 120px;
+            }
+            .calc-btn {
+                padding: 0.7rem 1.5rem;
+                margin-left: 0;
+                flex: 1 0 100%;
+                justify-content: center;
+            }
+            .interim-card,
+            .cps-card,
+            .comparison-card {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+            .interim-card .interim-right,
+            .cps-card .cps-right {
+                align-items: flex-start;
+                width: 100%;
+            }
+            .interim-card .interim-left .desc,
+            .cps-card .cps-left .desc {
+                max-width: 100%;
+            }
+            .comparison-grid {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            .comparison-item {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 1rem 0.8rem;
+            }
+            .dashboard {
+                padding: 1rem 1rem 1.5rem;
+                border-radius: 24px;
+            }
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1rem;
+            }
+            .header-right {
+                justify-content: space-between;
+                width: 100%;
+                padding: 0.4rem 1rem;
+            }
+            .header-left h1 {
+                font-size: 1.5rem;
+            }
+            .header-left .sub {
+                font-size: 0.85rem;
+            }
+            .calculator-inputs {
+                padding: 1rem;
+                gap: 1rem;
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .input-group {
+                flex: 1 1 auto;
+                min-width: 0;
+                width: 100%;
+            }
+            .calc-btn {
+                padding: 0.7rem;
+                width: 100%;
+                justify-content: center;
+                margin-left: 0;
+            }
+            .eligibility-banner {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+                padding: 1rem;
+            }
+            .eligibility-banner .service-detail {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.3rem;
+            }
+            .interim-card,
+            .cps-card,
+            .comparison-card {
+                padding: 1rem;
+            }
+            .interim-card .interim-right,
+            .cps-card .cps-right {
+                padding: 0.5rem 1rem;
+                width: 100%;
+            }
+            .interim-card .interim-right .amount,
+            .cps-card .cps-right .amount {
+                font-size: 1.3rem;
+            }
+            .comparison-item .item-value {
+                font-size: 1.1rem;
+            }
+            table {
+                font-size: 0.8rem;
+                min-width: 400px;
+            }
+            thead th,
+            tbody td {
+                padding: 0.7rem 0.5rem;
+            }
+            thead th:first-child,
+            tbody td:first-child {
+                padding-left: 0.7rem;
+            }
+            thead th:last-child,
+            tbody td:last-child {
+                padding-right: 0.7rem;
+            }
+            .benefit-name .icon-circle {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+                border-radius: 8px;
+            }
+            .benefit-name .name-text {
+                font-size: 0.8rem;
+            }
+            .benefit-name .name-text small {
+                font-size: 0.6rem;
+            }
+            .provision {
+                font-size: 0.78rem;
+            }
+            .calc-step {
+                font-size: 0.65rem;
+                padding: 0.2rem 0.5rem;
+            }
+            .footer-meta {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+            }
+            .footer-meta .left {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.4rem;
+            }
+            .pwa-banner {
+                flex-direction: column;
+                align-items: stretch;
+                text-align: center;
+                padding: 0.75rem 1rem;
+            }
+            .pwa-banner .pwa-text {
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .header-left h1 {
+                font-size: 1.2rem;
+            }
+            .header-right .gov-logo span {
+                font-size: 0.7rem;
+            }
+            .header-right .order-ref {
+                font-size: 0.6rem;
+                padding: 0.15rem 0.6rem;
+            }
+            .input-group input {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* ─── Print Styles ─── */
+        @media print {
+            .calc-btn,
+            .pwa-banner,
+            .header-right .order-ref {
+                display: none !important;
+            }
+            .dashboard {
+                box-shadow: none !important;
+                border: 1px solid #ddd !important;
+                padding: 1.5rem !important;
+            }
+            .interim-card,
+            .cps-card,
+            .comparison-card {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                border: 1px solid #ddd !important;
+            }
+            table {
+                font-size: 0.8rem !important;
+            }
+            tbody tr:hover {
+                background: transparent !important;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Roar Rater</h1>
-        <p>100% On-Device AI Architecture</p>
-        
-        <button id="record-btn">🎤</button>
-        
-        <div class="progress-container" id="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
-        </div>
-        
-        <div id="status">Tap mic to load AI and record</div>
+    <div class="dashboard">
 
-        <div class="results" id="results-card">
-            <div class="score-box">
-                <div style="font-size: 0.9rem; color:#aaa; text-transform:uppercase; letter-spacing:1px;">Final Roar Score</div>
-                <div class="score-display" id="roar-score">0</div>
-                <div class="bonus-text" id="bonus-text">+0 Character Bonus</div>
+        <!-- ─── PWA Install Banner ─── -->
+        <div class="pwa-banner" id="pwaBanner">
+            <div class="pwa-text">
+                <i class="fas fa-mobile-screen-button"></i>
+                <span>Install this app for offline access and faster loading.</span>
             </div>
-            
-            <div><span class="bike-badge" id="bike-class">Analyzing...</span></div>
-            <div class="trash-talk" id="trash-talk-text"></div>
+            <div style="display:flex; gap:0.5rem; align-items:center;">
+                <button class="pwa-btn" id="pwaInstallBtn">Install App</button>
+                <button class="pwa-close" id="pwaCloseBtn"><i class="fas fa-xmark"></i></button>
+            </div>
         </div>
+
+        <!-- ─── HEADER ─── -->
+        <div class="header">
+            <div class="header-left">
+                <div class="badge">
+                    <i class="fas fa-gavel"></i> Government Order
+                </div>
+                <h1>TAPS <span>Calculator</span></h1>
+                <div class="sub">
+                    <i class="fas fa-file-alt"></i>
+                    Tamil Nadu Assured Pension Scheme &mdash; G.O. (Ms) No.111, dated 16.06.2026
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="gov-logo">
+                    <i class="fas fa-building-columns"></i>
+                    <span>Govt. of Tamil Nadu</span>
+                </div>
+                <span class="order-ref">G.O. 111/2026</span>
+            </div>
+        </div>
+
+        <!-- ─── INPUT SECTION ─── -->
+        <div class="calculator-inputs">
+            <div class="input-group">
+                <label><i class="fas fa-calendar-plus"></i> Date of Joining</label>
+                <div class="input-wrapper pulse-on-focus">
+                    <input type="date" id="doj" value="1990-01-01" />
+                </div>
+                <div class="hint">Start of service</div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-calendar-day"></i> Date of Birth</label>
+                <div class="input-wrapper pulse-on-focus">
+                    <input type="date" id="dob" value="1965-06-15" />
+                </div>
+                <div class="hint">For age at retirement</div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-calendar-alt"></i> Date of Retirement / Death</label>
+                <div class="input-wrapper pulse-on-focus">
+                    <input type="date" id="dor" value="2025-12-31" />
+                </div>
+                <div class="hint">Date of retirement or death</div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-wallet"></i> Basic Pay (monthly)</label>
+                <div class="input-wrapper pulse-on-focus">
+                    <span>₹</span>
+                    <input type="number" id="basicPay" value="50000" step="1000" min="0" />
+                </div>
+                <div class="hint">Last drawn basic pay</div>
+            </div>
+
+            <div class="input-group">
+                <label><i class="fas fa-percent"></i> DA Rate (for reference)</label>
+                <div class="input-wrapper pulse-on-focus">
+                    <span>%</span>
+                    <input type="number" id="daRate" value="46" step="1" min="0" max="200" />
+                </div>
+                <div class="hint">Not used for interim (fixed 60% DR)</div>
+            </div>
+
+            <button class="calc-btn" id="calculateBtn">
+                <i class="fas fa-calculator"></i> Calculate
+            </button>
+        </div>
+
+        <!-- ─── ELIGIBILITY BANNER ─── -->
+        <div class="eligibility-banner" id="eligibilityBanner">
+            <div class="status">
+                <span class="label">Pension Eligibility:</span>
+                <span class="value" id="eligibilityStatus">—</span>
+            </div>
+            <div class="service-detail">
+                <span><i class="fas fa-clock"></i> Total Service: <strong id="totalService">—</strong> years</span>
+                <span><i class="fas fa-user"></i> Age at Retirement: <strong id="retirementAge">—</strong> years</span>
+                <span><i class="fas fa-check-circle"></i> Minimum required: <strong>10 years</strong></span>
+            </div>
+        </div>
+
+        <!-- ─── INTERIM PAY-OUT CARD ─── -->
+        <div class="interim-card" id="interimCard">
+            <div class="interim-left">
+                <div class="title">
+                    <i class="fas fa-hourglass-half"></i> Interim Pay-out (as per G.O. 111)
+                </div>
+                <div class="desc">
+                    <span class="rule-highlight">30% of last drawn Basic Pay</span> <strong>or</strong>
+                    <span class="rule-highlight">₹10,000</span>, whichever is higher, plus
+                    <span class="rule-highlight">60% Dearness Relief</span>.
+                    <br />
+                    <span style="font-size: 0.75rem; color: #92400e;">
+                        <i class="fas fa-info-circle"></i> This is a provisional monthly payout until TAPS rules are notified.
+                    </span>
+                </div>
+                <div class="family-interim" id="familyInterimInfo">
+                    <!-- dynamic: family interim details -->
+                </div>
+            </div>
+            <div class="interim-right">
+                <div class="amount" id="interimTotal">—</div>
+                <div class="breakdown" id="interimBreakdown">—</div>
+            </div>
+        </div>
+
+        <!-- ─── CPS ONE-TIME SETTLEMENT CARD ─── -->
+        <div class="cps-card" id="cpsCard">
+            <div class="cps-left">
+                <div class="title">
+                    <i class="fas fa-coins"></i> CPS One-Time Settlement (Stage‑I Opt‑Out)
+                </div>
+                <div class="desc">
+                    Enter your accumulated CPS contributions and interest as per latest statement.
+                    The total is the amount you would receive if you opt out immediately.
+                </div>
+            </div>
+            <div class="cps-inputs">
+                <div class="input-group">
+                    <label><i class="fas fa-user"></i> Employee Contribution</label>
+                    <div class="input-wrapper pulse-on-focus">
+                        <span>₹</span>
+                        <input type="number" id="empContrib" value="1500000" step="10000" min="0" />
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-building"></i> Government Contribution</label>
+                    <div class="input-wrapper pulse-on-focus">
+                        <span>₹</span>
+                        <input type="number" id="govContrib" value="1500000" step="10000" min="0" />
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label><i class="fas fa-chart-line"></i> Interest Accrued</label>
+                    <div class="input-wrapper pulse-on-focus">
+                        <span>₹</span>
+                        <input type="number" id="interestAccrued" value="800000" step="10000" min="0" />
+                    </div>
+                </div>
+            </div>
+            <div class="cps-right">
+                <div class="amount" id="cpsTotal">—</div>
+                <div class="breakdown" id="cpsBreakdown">—</div>
+            </div>
+        </div>
+
+        <!-- ─── COMPARISON CARD ─── -->
+        <div class="comparison-card" id="comparisonCard">
+            <div class="comp-title">
+                <i class="fas fa-scale-balanced"></i> Benefit Comparison: Interim vs Assured Pension (5‑Year Projection)
+            </div>
+            <div class="comparison-grid" id="comparisonGrid">
+                <!-- dynamic content -->
+            </div>
+            <div class="comparison-note" id="comparisonNote">
+                <!-- dynamic recommendation -->
+            </div>
+        </div>
+
+        <!-- ─── RESULTS TABLE ─── -->
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Benefit Component</th>
+                        <th>Provision &amp; Computed Value (with formula steps)</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody">
+                    <!-- Rows will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ─── FOOTER META ─── -->
+        <div class="footer-meta">
+            <div class="left">
+                <span class="stat">
+                    <i class="fas fa-circle-check"></i>
+                    <strong id="componentCount">7</strong> benefit components
+                </span>
+                <span class="stat">
+                    <i class="fas fa-calendar-day"></i>
+                    Effective from <strong>01.01.2026</strong>
+                </span>
+                <span class="stat">
+                    <i class="fas fa-file-signature"></i>
+                    G.O. <strong>111/2026</strong>
+                </span>
+            </div>
+            <div class="right">
+                <span class="pill active">
+                    <i class="fas fa-circle"></i> In force
+                </span>
+                <span class="pill">
+                    <i class="fas fa-print"></i> Print
+                </span>
+                <span class="pill">
+                    <i class="fas fa-download"></i> PDF
+                </span>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // --- 1. CONFIGURATION ---
-        // REPLACE this URL with your own Teachable Machine Audio model link once you train it!
-        // Example: "https://teachablemachine.withgoogle.com/models/YOUR_MODEL_ID/"
-        const URL = "https://teachablemachine.withgoogle.com/models/placeholder/"; 
-        
-        const RECORD_DURATION_MS = 5000; // 5 seconds
-        
-        // Trash Talk Engine (Tamil-English)
-        const trashTalkTemplates = {
-            low: [
-                "Enna ba, mixer grinder sound kekuthu! 😂",
-                "TVS 50 ah idhu? Needs more throat! 🛵",
-                "Sathame illa... Cycle otlama ba? 🚲"
-            ],
-            medium: [
-                "Not bad, aana innum konjam raw power thevai! 🏍️",
-                "Decent ah irukku, but where is the bass man? 🤔",
-                "KTM Duke vibes, pulling out okay! 🔥"
-            ],
-            high: [
-                "Verithanam! Pure muscle! 💥",
-                "Therikkavidalama! That's a beast roaring! 🦁",
-                "Kaantha kural! Royal Enfield thozha! 👑"
-            ]
-        };
+        (function() {
+            // ─── DOM refs ───
+            const dojInput = document.getElementById('doj');
+            const dobInput = document.getElementById('dob');
+            const dorInput = document.getElementById('dor');
+            const basicInput = document.getElementById('basicPay');
+            const daInput = document.getElementById('daRate');
+            const empContribInput = document.getElementById('empContrib');
+            const govContribInput = document.getElementById('govContrib');
+            const interestInput = document.getElementById('interestAccrued');
+            const calcBtn = document.getElementById('calculateBtn');
+            const tbody = document.getElementById('resultsBody');
+            const eligibilityStatus = document.getElementById('eligibilityStatus');
+            const totalServiceSpan = document.getElementById('totalService');
+            const retirementAgeSpan = document.getElementById('retirementAge');
+            const interimTotal = document.getElementById('interimTotal');
+            const interimBreakdown = document.getElementById('interimBreakdown');
+            const familyInterimInfo = document.getElementById('familyInterimInfo');
+            const cpsTotal = document.getElementById('cpsTotal');
+            const cpsBreakdown = document.getElementById('cpsBreakdown');
+            const comparisonGrid = document.getElementById('comparisonGrid');
+            const comparisonNote = document.getElementById('comparisonNote');
 
-        // UI Elements
-        const recordBtn = document.getElementById('record-btn');
-        const statusText = document.getElementById('status');
-        const resultsCard = document.getElementById('results-card');
-        const roarScoreEl = document.getElementById('roar-score');
-        const bikeClassEl = document.getElementById('bike-class');
-        const trashTalkEl = document.getElementById('trash-talk-text');
-        const bonusTextEl = document.getElementById('bonus-text');
-        const progressContainer = document.getElementById('progress-container');
-        const progressBar = document.getElementById('progress-bar');
+            // ─── PWA elements ───
+            const pwaBanner = document.getElementById('pwaBanner');
+            const pwaInstallBtn = document.getElementById('pwaInstallBtn');
+            const pwaCloseBtn = document.getElementById('pwaCloseBtn');
 
-        // State Variables
-        let isRecording = false;
-        let recognizer;
-        let audioContext;
-        let analyser;
-        let microphone;
-        let maxVolume = 0;
-        let detectedClass = "Unknown";
-        let maxConfidence = 0;
-        let progressInterval;
+            // ─── PWA: Service Worker Registration ───
+            if ('serviceWorker' in navigator) {
+                navigator.serviceWorker.register('data:application/javascript;base64,' + btoa(`
+                    const CACHE_NAME = 'taps-cache-v1';
+                    const urlsToCache = [
+                        '.',
+                        'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
+                        'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css'
+                    ];
 
-        // --- 2. TFJS MODEL LOADING ---
-        async function createModel() {
-            const checkpointURL = URL + "model.json"; // model topology
-            const metadataURL = URL + "metadata.json"; // model metadata
-
-            try {
-                const recognizer = speechCommands.create(
-                    "BROWSER_FFT", // Fourier transform type
-                    undefined,     // speech commands vocabulary feature
-                    checkpointURL,
-                    metadataURL
-                );
-                // check that model and metadata are loaded
-                await recognizer.ensureModelLoaded();
-                return recognizer;
-            } catch (e) {
-                console.warn("Real TFJS model not found. Falling back to Mock Engine for UI testing.");
-                return null; // Return null to trigger the graceful fallback demo
-            }
-        }
-
-        // --- 3. CORE LOGIC ---
-        recordBtn.addEventListener('click', async () => {
-            if (isRecording) return;
-            
-            resultsCard.style.display = 'none';
-            statusText.innerText = 'Loading TFJS Model into memory...';
-            
-            // Lazy load model on first click
-            if (!recognizer && recognizer !== null) {
-                recognizer = await createModel();
-            }
-
-            startPipeline();
-        });
-
-        async function startPipeline() {
-            try {
-                // Request raw microphone access for decibel calculation
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                setupDecibelTracker(stream);
-
-                isRecording = true;
-                recordBtn.classList.add('recording');
-                progressContainer.style.display = 'block';
-                progressBar.style.width = '0%';
-                statusText.innerText = 'Listening... Rev the engine!';
-
-                // Start Progress Bar
-                let elapsed = 0;
-                progressInterval = setInterval(() => {
-                    elapsed += 100;
-                    progressBar.style.width = (elapsed / RECORD_DURATION_MS) * 100 + '%';
-                }, 100);
-
-                // If real TFJS model loaded, start classifying in real time
-                if (recognizer) {
-                    const classLabels = recognizer.wordLabels(); 
-                    recognizer.listen(result => {
-                        // Find highest confidence class during this window
-                        let scores = result.scores;
-                        let highestIndex = scores.indexOf(Math.max(...scores));
-                        
-                        if (scores[highestIndex] > maxConfidence) {
-                            maxConfidence = scores[highestIndex];
-                            detectedClass = classLabels[highestIndex];
-                        }
-                    }, {
-                        includeSpectrogram: false,
-                        probabilityThreshold: 0.75,
-                        invokeCallbackOnNoiseAndUnknown: true,
-                        overlapFactor: 0.50
+                    self.addEventListener('install', event => {
+                        event.waitUntil(
+                            caches.open(CACHE_NAME)
+                                .then(cache => cache.addAll(urlsToCache))
+                                .then(() => self.skipWaiting())
+                        );
                     });
+
+                    self.addEventListener('activate', event => {
+                        event.waitUntil(
+                            caches.keys().then(cacheNames => {
+                                return Promise.all(
+                                    cacheNames.map(name => {
+                                        if (name !== CACHE_NAME) {
+                                            return caches.delete(name);
+                                        }
+                                    })
+                                );
+                            }).then(() => self.clients.claim())
+                        );
+                    });
+
+                    self.addEventListener('fetch', event => {
+                        event.respondWith(
+                            caches.match(event.request)
+                                .then(response => response || fetch(event.request))
+                        );
+                    });
+                `)).catch(() => {});
+            }
+
+            // ─── PWA: Install prompt ───
+            let deferredPrompt = null;
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                pwaBanner.classList.add('show');
+            });
+
+            pwaInstallBtn.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const result = await deferredPrompt.userChoice;
+                    if (result.outcome === 'accepted') {
+                        pwaBanner.classList.remove('show');
+                    }
+                    deferredPrompt = null;
+                }
+            });
+
+            pwaCloseBtn.addEventListener('click', () => {
+                pwaBanner.classList.remove('show');
+            });
+
+            // ─── Helper: parse date ───
+            function parseDate(dateString) {
+                if (!dateString) return null;
+                const parts = dateString.split('-');
+                if (parts.length !== 3) return null;
+                const year = parseInt(parts[0], 10);
+                const month = parseInt(parts[1], 10) - 1;
+                const day = parseInt(parts[2], 10);
+                return new Date(year, month, day);
+            }
+
+            // ─── Helper: years between ───
+            function yearsBetween(date1, date2) {
+                if (!date1 || !date2) return 0;
+                const diffMs = date2 - date1;
+                if (diffMs < 0) return 0;
+                const diffDays = diffMs / (1000 * 60 * 60 * 24);
+                return diffDays / 365.25;
+            }
+
+            // ─── Format currency ───
+            function formatCurrency(amount) {
+                if (amount === undefined || amount === null || isNaN(amount)) return '₹0';
+                return '₹' + Math.round(amount).toLocaleString('en-IN');
+            }
+
+            // ─── Render all ───
+            function renderResults() {
+                // Read dates
+                const dojDate = parseDate(dojInput.value);
+                const dobDate = parseDate(dobInput.value);
+                const dorDate = parseDate(dorInput.value);
+
+                // Read financials
+                const basic = parseFloat(basicInput.value) || 0;
+                const daPercent = parseFloat(daInput.value) || 0;
+
+                // Read CPS inputs
+                const empContrib = parseFloat(empContribInput.value) || 0;
+                const govContrib = parseFloat(govContribInput.value) || 0;
+                const interest = parseFloat(interestInput.value) || 0;
+                const cpsCorpus = empContrib + govContrib + interest;
+
+                // Compute service years
+                const serviceYears = yearsBetween(dojDate, dorDate);
+                const ageAtRetirement = yearsBetween(dobDate, dorDate);
+
+                // Eligibility
+                const eligible = serviceYears >= 10;
+
+                // Update eligibility banner
+                totalServiceSpan.textContent = serviceYears.toFixed(2);
+                retirementAgeSpan.textContent = ageAtRetirement.toFixed(2);
+                if (eligible) {
+                    eligibilityStatus.textContent = '✅ Eligible';
+                    eligibilityStatus.className = 'value eligible';
+                } else {
+                    eligibilityStatus.textContent = '❌ Not Eligible (service < 10 yrs)';
+                    eligibilityStatus.className = 'value ineligible';
                 }
 
-                // Stop after 5 seconds
-                setTimeout(() => {
-                    stopPipeline(stream);
-                }, RECORD_DURATION_MS);
+                // ─── Interim Payout ───
+                const interimBase = Math.max(0.30 * basic, 10000);
+                const drInterim = 0.60 * interimBase;
+                const totalInterim = interimBase + drInterim;
 
-            } catch (err) {
-                console.error(err);
-                statusText.innerText = "Error: Microphone permission denied.";
+                // Family Interim
+                const familyInterim = 0.60 * totalInterim;
+                const dihInterim = totalInterim;
+
+                interimTotal.textContent = formatCurrency(totalInterim);
+                interimBreakdown.innerHTML = `
+                    Base: ${formatCurrency(interimBase)} (30% of ${formatCurrency(basic)} or ₹10,000) 
+                    + DR: ${formatCurrency(drInterim)} (60% of base) 
+                    <span>@ 60%</span>
+                `;
+                familyInterimInfo.innerHTML = `
+                    <i class="fas fa-people-group"></i> 
+                    <strong>Family Interim (after retiree death):</strong> 60% of retiree's interim = ${formatCurrency(familyInterim)}<br>
+                    <i class="fas fa-exclamation-triangle"></i> 
+                    <strong>Death-in-harness Family Interim:</strong> same as retiree interim = ${formatCurrency(dihInterim)}
+                `;
+
+                // ─── CPS One-Time Settlement ───
+                cpsTotal.textContent = formatCurrency(cpsCorpus);
+                cpsBreakdown.innerHTML = `
+                    Emp: ${formatCurrency(empContrib)} + Gov: ${formatCurrency(govContrib)} + Interest: ${formatCurrency(interest)}
+                `;
+
+                // ─── Regular benefits ───
+                const basePension = 0.5 * basic;
+                const daOnPension = basePension * (daPercent / 100);
+                const totalPension = basePension + daOnPension;
+                const daOnBasic = basic * (daPercent / 100);
+                const employeeContribution = 0.10 * (basic + daOnBasic);
+                const familyPension = 0.60 * totalPension;
+                const gratuityRaw = (basic + daOnBasic) * (15 / 26) * serviceYears;
+                const gratuityCapped = Math.min(gratuityRaw, 2500000);
+
+                // ─── Projection: 5 years, 4% DA increase per year ───
+                const projectionYears = 5;
+                const daGrowth = 0.04;
+
+                const interimMonthly = totalInterim;
+                const interimTotalProjection = interimMonthly * 12 * projectionYears;
+
+                let currentDA = daPercent;
+                let annualPensionSum = 0;
+                let yearDetails = [];
+                for (let y = 1; y <= projectionYears; y++) {
+                    const daAmount = basePension * (currentDA / 100);
+                    const monthly = basePension + daAmount;
+                    annualPensionSum += monthly * 12;
+                    yearDetails.push({ year: y, monthly: monthly, da: currentDA });
+                    currentDA = currentDA * (1 + daGrowth);
+                }
+                const finalPensionTotalProjection = annualPensionSum;
+
+                // ─── Comparison card ───
+                let comparisonHTML = '';
+                comparisonHTML += `
+                    <div class="comparison-item">
+                        <div class="item-label">Interim Payout (5 yrs)</div>
+                        <div class="item-value">${formatCurrency(interimTotalProjection)}</div>
+                        <div class="item-detail">Monthly: ${formatCurrency(interimMonthly)} (fixed)</div>
+                        <span class="item-badge badge-recommend">Provisional</span>
+                    </div>
+                    <div class="comparison-item">
+                        <div class="item-label">Assured Pension (5 yrs)</div>
+                        <div class="item-value">${formatCurrency(finalPensionTotalProjection)}</div>
+                        <div class="item-detail">Year 1: ${formatCurrency(yearDetails[0].monthly)} | Year 5: ${formatCurrency(yearDetails[4].monthly)}</div>
+                        <span class="item-badge ${finalPensionTotalProjection > interimTotalProjection ? 'badge-best' : 'badge-warn'}">${finalPensionTotalProjection > interimTotalProjection ? '✅ Better' : '⚠️ Lower'}</span>
+                    </div>
+                `;
+                comparisonGrid.innerHTML = comparisonHTML;
+
+                // ─── Recommendation ───
+                let note = '';
+                if (!eligible) {
+                    note = `<strong>❌ Not eligible for pension:</strong> Since your service is less than 10 years, you are not entitled to any pension (interim or final). 
+                            Your best option is to take the <strong>One-Time CPS Settlement</strong> of ${formatCurrency(cpsCorpus)}. 
+                            You may also consider the Stage‑I opt‑out to receive this amount immediately.`;
+                } else {
+                    const diff = finalPensionTotalProjection - interimTotalProjection;
+                    if (diff > 0) {
+                        note = `<strong>✅ Assured Pension is better</strong> — it gives you <strong>${formatCurrency(diff)}</strong> more over 5 years. 
+                                The final pension starts at ${formatCurrency(yearDetails[0].monthly)} per month and grows with DA (4% p.a.). 
+                                If you can wait for TAPS rules to be operationalized, the Assured Pension is the superior long‑term choice.`;
+                    } else if (diff < 0) {
+                        note = `<strong>⚠️ Interim Payout is better</strong> — it gives you <strong>${formatCurrency(Math.abs(diff))}</strong> more over 5 years. 
+                                However, the interim payout is provisional and may be adjusted later. 
+                                Consider the Stage‑II opt‑out after TAPS rules are notified to lock in the final pension.`;
+                    } else {
+                        note = `<strong>≈ Both options are nearly equal</strong> over 5 years. Your choice may depend on whether you prefer a guaranteed interim amount now or a potentially growing pension later.`;
+                    }
+                    note += `<br><span style="font-size:0.8rem;">Assumptions: 5‑year projection, DA increases at 4% annually, interim payout remains constant.</span>`;
+                }
+                comparisonNote.innerHTML = note;
+
+                // ─── Build rows for table ───
+                const rows = [{
+                    icon: 'blue',
+                    iconClass: 'fa-shield-halved',
+                    name: 'Assured Base Pension (TAPS)',
+                    desc: 'Final pension (50% of basic + DR)',
+                    provision: `50% of last-drawn basic pay + Dearness Relief (as per rules)`,
+                    step: `${formatCurrency(basic)} × 0.50 = <strong>${formatCurrency(basePension)}</strong> (base) + DA @ ${daPercent}% = <strong>${formatCurrency(totalPension)}</strong> total`
+                }, {
+                    icon: 'teal',
+                    iconClass: 'fa-hourglass-half',
+                    name: 'Interim Pay-out (Retiree)',
+                    desc: 'Provisional monthly payout (G.O. 111)',
+                    provision: `30% of basic or ₹10,000 (whichever higher) + 60% DR`,
+                    step: `Base = max(30%×${formatCurrency(basic)}, 10000) = ${formatCurrency(interimBase)}; DR = 60% of base = ${formatCurrency(drInterim)} → <strong>${formatCurrency(totalInterim)}</strong>`
+                }, {
+                    icon: 'purple',
+                    iconClass: 'fa-people-group',
+                    name: 'Family Interim (after retiree death)',
+                    desc: '60% of retiree’s interim payout',
+                    provision: `60% of interim monthly payout`,
+                    step: `60% × ${formatCurrency(totalInterim)} = <strong>${formatCurrency(familyInterim)}</strong>`
+                }, {
+                    icon: 'rose',
+                    iconClass: 'fa-heart',
+                    name: 'Family Interim (death-in-harness)',
+                    desc: 'For family of deceased in service',
+                    provision: `30% of basic or ₹10,000 (whichever higher) + 60% DR`,
+                    step: `Same as retiree interim = <strong>${formatCurrency(dihInterim)}</strong>`
+                }, {
+                    icon: 'indigo',
+                    iconClass: 'fa-hand-holding-usd',
+                    name: 'One-Time Settlement (Stage‑I Opt‑Out)',
+                    desc: 'CPS accumulated balance (Employee + Govt + Interest)',
+                    provision: `Full corpus as per latest CPS statement`,
+                    step: `Employee: ${formatCurrency(empContrib)} + Govt: ${formatCurrency(govContrib)} + Interest: ${formatCurrency(interest)} = <strong>${formatCurrency(cpsCorpus)}</strong>`
+                }, {
+                    icon: 'amber',
+                    iconClass: 'fa-coins',
+                    name: 'Employee Contribution (CPS)',
+                    desc: 'During active service (for reference)',
+                    provision: `10% of (Basic + DA) – continues till TAPS rules`,
+                    step: `10% × (${formatCurrency(basic)} + ${formatCurrency(daOnBasic)}) = <strong>${formatCurrency(employeeContribution)}</strong>`
+                }, {
+                    icon: 'green',
+                    iconClass: 'fa-circle-dollar',
+                    name: 'Gratuity Ceiling',
+                    desc: 'Death-cum-Retirement Gratuity',
+                    provision: `(Basic + DA) × 15/26 × Years (capped at ₹25 Lakh)`,
+                    step: `(${formatCurrency(basic)} + ${formatCurrency(daOnBasic)}) × 0.5769 × ${serviceYears.toFixed(2)} = <strong>${formatCurrency(gratuityCapped)}</strong> ${gratuityRaw > 2500000 ? '<span class="tag amber"><i class="fas fa-arrow-up"></i> cap applied</span>' : ''}`
+                }];
+
+                tbody.innerHTML = '';
+                rows.forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>
+                            <div class="benefit-name">
+                                <div class="icon-circle ${row.icon}"><i class="fas ${row.iconClass}"></i></div>
+                                <div class="name-text">
+                                    ${row.name}
+                                    <small>${row.desc}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="provision">
+                                <span class="highlight">${row.provision}</span>
+                                <span class="calc-step"><i class="fas fa-calculator" style="margin-right: 0.4rem; color: #64748b;"></i> ${row.step}</span>
+                            </div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+
+                document.getElementById('componentCount').textContent = rows.length;
             }
-        }
 
-        function setupDecibelTracker(stream) {
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioContext.createAnalyser();
-            microphone = audioContext.createMediaStreamSource(stream);
-            microphone.connect(analyser);
-            analyser.fftSize = 256;
-            
-            const bufferLength = analyser.frequencyBinCount;
-            const dataArray = new Uint8Array(bufferLength);
-            maxVolume = 0;
+            // ─── Event listeners ───
+            calcBtn.addEventListener('click', renderResults);
+            [dojInput, dobInput, dorInput, basicInput, daInput, empContribInput, govContribInput, interestInput].forEach(input => {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        renderResults();
+                    }
+                });
+                input.addEventListener('change', renderResults);
+            });
 
-            function track() {
-                if (!isRecording) return;
-                analyser.getByteFrequencyData(dataArray);
-                let sum = 0;
-                for (let i = 0; i < bufferLength; i++) { sum += dataArray[i]; }
-                let avg = sum / bufferLength;
-                if (avg > maxVolume) maxVolume = avg; // Track peak volume
-                requestAnimationFrame(track);
-            }
-            track();
-        }
-
-        function stopPipeline(stream) {
-            isRecording = false;
-            clearInterval(progressInterval);
-            recordBtn.classList.remove('recording');
-            progressContainer.style.display = 'none';
-            statusText.innerText = 'Processing completely on-device...';
-
-            // Clean up Audio Context
-            stream.getTracks().forEach(track => track.stop());
-            if (audioContext && audioContext.state !== 'closed') {
-                audioContext.close();
-            }
-            if (recognizer) {
-                recognizer.stopListening();
-            }
-
-            calculateAndShowResults();
-        }
-
-        function calculateAndShowResults() {
-            // 1. Calculate Base Decibel Score (Mapping peak volume 0-255 to 0-85)
-            let baseScore = Math.min(85, Math.round((maxVolume / 255) * 85 * 1.5)); 
-            if (baseScore < 10) baseScore = Math.floor(Math.random() * 20) + 10; 
-
-            // 2. Handle AI Bike Classification & Character Bonus
-            let characterBonus = 0;
-
-            // If the user hasn't put in their real Teachable Machine URL yet, Mock the AI
-            if (!recognizer) {
-                if (baseScore > 75) { detectedClass = "Royal Enfield Classic 350"; maxConfidence = 0.92; }
-                else if (baseScore > 50) { detectedClass = "KTM Duke 390"; maxConfidence = 0.85; }
-                else { detectedClass = "TVS XL Super"; maxConfidence = 0.78; }
-            }
-
-            // Assign Bonus based on AI Output (The "Character" Bonus from your architecture)
-            if (detectedClass.includes("Royal Enfield")) characterBonus = 15;
-            else if (detectedClass.includes("KTM")) characterBonus = 10;
-            else if (detectedClass.includes("Yamaha")) characterBonus = 8;
-            else characterBonus = 2; // Commuter bikes get low bonus
-
-            // 3. Final Roar Score Calculation
-            let finalScore = Math.min(100, baseScore + characterBonus);
-
-            // 4. Update UI
-            roarScoreEl.innerText = finalScore;
-            bonusTextEl.innerText = `+${characterBonus} Character Bonus (${detectedClass})`;
-            bikeClassEl.innerText = `${detectedClass} (Confidence: ${Math.round(maxConfidence * 100)}%)`;
-            
-            // 5. Fire Trash Talk Engine
-            let category = 'low';
-            if (finalScore > 75) category = 'high';
-            else if (finalScore > 40) category = 'medium';
-
-            const phrases = trashTalkTemplates[category];
-            trashTalkEl.innerText = phrases[Math.floor(Math.random() * phrases.length)];
-
-            resultsCard.style.display = 'block';
-            statusText.innerText = 'Tap mic to test another bike!';
-            
-            // Reset state for next run
-            maxConfidence = 0;
-            detectedClass = "Unknown";
-        }
+            renderResults();
+        })();
     </script>
+
 </body>
 </html>
